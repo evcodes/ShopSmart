@@ -10,6 +10,7 @@ import com.eddyvarela.shopping.data.AppDatabase
 import com.eddyvarela.shopping.data.ShoppingItem
 import com.eddyvarela.shopping.touch.ItemRecyclerTouchCallback
 import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.Thread.sleep
 
 @Suppress("MayBeConstant")
 class MainActivity : AppCompatActivity(), ItemDialog.ItemHandler {
@@ -25,12 +26,17 @@ class MainActivity : AppCompatActivity(), ItemDialog.ItemHandler {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setTheme(R.style.AppTheme)
+        initRecyclerViewFromDb()
+        sleep(3000)
+
         setContentView(R.layout.activity_main)
 
         newShoppingItem.setOnClickListener{
                showAddItemDialog()
         }
-        initRecyclerViewFromDb()
+
     }
 
     private fun initRecyclerViewFromDb() {
@@ -38,7 +44,6 @@ class MainActivity : AppCompatActivity(), ItemDialog.ItemHandler {
             val itemList = AppDatabase.getInstance(this@MainActivity).shoppingItemDao().getAllItems()
 
             runOnUiThread {
-                // Update UI
 
                 itemAdapter = ItemAdapter(this, itemList)
 
