@@ -1,5 +1,6 @@
 package com.eddyvarela.shopping
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
@@ -27,16 +28,31 @@ class MainActivity : AppCompatActivity(), ItemDialog.ItemHandler {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setTheme(R.style.AppTheme)
         initRecyclerViewFromDb()
-        sleep(3000)
+
+
+        var splashActivityDetails = Intent()
+        splashActivityDetails.setClass(
+            this@MainActivity,
+            SplashActivity::class.java
+        )
+
+        startActivity(splashActivityDetails)
 
         setContentView(R.layout.activity_main)
+
 
         newShoppingItem.setOnClickListener{
                showAddItemDialog()
         }
 
+        btnDeleteAll.setOnClickListener {
+
+            Thread {
+                AppDatabase.getInstance(this@MainActivity).shoppingItemDao().deleteAll()
+                initRecyclerViewFromDb()
+            }.start()
+        }
     }
 
     private fun initRecyclerViewFromDb() {
@@ -80,7 +96,7 @@ class MainActivity : AppCompatActivity(), ItemDialog.ItemHandler {
 
     override fun itemCreated(item: ShoppingItem) {
         Thread{
-            val newId = AppDatabase.getInstance(this).shoppingItemDao().insertItem(item)
+            var newId = AppDatabase.getInstance(this).shoppingItemDao().insertItem(item)
 
             item.itemID = newId
 

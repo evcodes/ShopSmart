@@ -5,8 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ShoppingListActivity">
-
+        tools:context=".MainActivity">
     <TextView
             android:text="@string/shopping_list"
             android:textSize="26sp"
@@ -70,6 +69,16 @@
             app:maxImageSize="72dp"
             app:srcCompat="@drawable/icons8_add_100"
     />
+    <Button
+            android:text="@string/remove_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnDeleteAll"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 </android.support.constraint.ConstraintLayout>

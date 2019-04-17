@@ -15,4 +15,7 @@ interface ShoppingItemDao {
 
     @Update
     fun updateItem(item:ShoppingItem)
+
+    @Query("DELETE FROM shoppingItem")
+    fun deleteAll()
 }

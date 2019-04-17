@@ -42,7 +42,7 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ViewHolder>, ItemTouchHelpe
 
 
     fun addItem(item: ShoppingItem) {
-        shoppingItems.add(0, item)
+        shoppingItems.add(item)
         //notifyDataSetChanged()
         notifyItemInserted(0)
     }
@@ -59,6 +59,11 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ViewHolder>, ItemTouchHelpe
                 notifyItemRemoved(deletePosition)
             }
         }.start()
+    }
+
+    fun removeAll() {
+        shoppingItems.clear()
+        notifyDataSetChanged()
     }
 
     fun updateCheckBox(item: ShoppingItem, editIndex: Int) {
@@ -81,18 +86,21 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ViewHolder>, ItemTouchHelpe
         var tvDate = itemView.tvDate!!
         var tvCategory = itemView.tvCategory!!
         var tvDescription = itemView.tvDescription!!
+        var tvPrice = itemView.tvPrice!!
         var cbDone = itemView.cbDone!!
         var btnEdit = itemView.btnEdit!!
         var btnDelete= itemView.btnDelete!!
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val item  = shoppingItems[position]
+        val item = shoppingItems[viewHolder.adapterPosition]
 
         viewHolder.tvTitle.text = item.title
         viewHolder.tvDate.text = item.date
         viewHolder.tvCategory.text = item.category
         viewHolder.tvDescription.text = item.description
+        viewHolder.tvPrice.text = item.price
+
         viewHolder.cbDone.isChecked = item.isPurchased
 
         viewHolder.btnDelete.setOnClickListener {
