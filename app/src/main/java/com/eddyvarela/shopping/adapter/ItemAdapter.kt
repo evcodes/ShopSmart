@@ -1,6 +1,8 @@
 package com.eddyvarela.shopping.adapter
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
@@ -81,6 +83,15 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ViewHolder>, ItemTouchHelpe
         notifyItemMoved(fromPosition, toPosition)
     }
 
+    private fun getImagesrc(category: String): Int {
+        return when (category) {
+            "Groceries" -> R.drawable.groceries
+            "Miscellaneous" -> R.drawable.misc
+            "Clothing" -> R.drawable.clothing
+            else -> R.mipmap.ic_launcher
+        }
+    }
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var tvTitle = itemView.tvTitle!!
         var tvDate = itemView.tvDate!!
@@ -90,6 +101,7 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ViewHolder>, ItemTouchHelpe
         var cbDone = itemView.cbDone!!
         var btnEdit = itemView.btnEdit!!
         var btnDelete= itemView.btnDelete!!
+        var imageSrc = itemView.itemIcon!!
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
@@ -100,8 +112,8 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ViewHolder>, ItemTouchHelpe
         viewHolder.tvCategory.text = item.category
         viewHolder.tvDescription.text = item.description
         viewHolder.tvPrice.text = item.price
-
         viewHolder.cbDone.isChecked = item.isPurchased
+        viewHolder.imageSrc.setImageResource(getImagesrc(item.category))
 
         viewHolder.btnDelete.setOnClickListener {
             deleteItem(viewHolder.adapterPosition)

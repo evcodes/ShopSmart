@@ -18,44 +18,46 @@ class LoginActivity : AppCompatActivity() {
     public override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = mAuth?.currentUser
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login2)
+        mAuth = FirebaseAuth.getInstance()
 
         FirebaseApp.initializeApp(this)
-
 
         registerButton.setOnClickListener {
             registerUser()
         }
+
         loginButton.setOnClickListener {
-            mAuth = FirebaseAuth.getInstance()
-            finish()
+            loginUser()
         }
 
     }
 
-    fun loginUser() {
+    private fun loginUser() {
         FirebaseAuth.getInstance().signInWithEmailAndPassword(
             etEmail.text.toString(), etPassword.text.toString()
         ).addOnCompleteListener {
             if (it.isSuccessful) {
                 startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+
             } else {
                 Toast.makeText(
                     this@LoginActivity, "Error: " +
                             it.exception?.message,
                     Toast.LENGTH_SHORT
-                ).show();
+                ).show()
             }
         }.addOnFailureListener {
             Toast.makeText(
                 this@LoginActivity,
                 "Error: ${it.message}",
-                Toast.LENGTH_SHORT
-            ).show();
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -75,7 +77,7 @@ class LoginActivity : AppCompatActivity() {
                     this@LoginActivity, "Error: " +
                             it.exception?.message,
                     Toast.LENGTH_SHORT
-                ).show();
+                ).show()
             }
         }.addOnFailureListener {
             Toast.makeText(
@@ -85,6 +87,5 @@ class LoginActivity : AppCompatActivity() {
             ).show()
         }
     }
-
 
 }

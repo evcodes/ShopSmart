@@ -2,6 +2,8 @@ package com.eddyvarela.shopping
 
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
@@ -133,6 +135,7 @@ class ItemDialog : DialogFragment(), AdapterView.OnItemSelectedListener {
     }
 
     private fun handleItemCreate() {
+
         itemHandler.itemCreated(
             ShoppingItem(
                 null,
@@ -140,7 +143,8 @@ class ItemDialog : DialogFragment(), AdapterView.OnItemSelectedListener {
                 etItemDescription.text.toString(),
                 etItemCategory.selectedItem.toString(),
                 etItemPrice.text.toString(),
-                Date(System.currentTimeMillis()).toString(), false, ""
+                Date(System.currentTimeMillis()).toString(),
+                false
             )
         )
     }

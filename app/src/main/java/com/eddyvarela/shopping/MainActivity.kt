@@ -1,6 +1,5 @@
 package com.eddyvarela.shopping
 
-import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
@@ -11,9 +10,11 @@ import com.eddyvarela.shopping.data.AppDatabase
 import com.eddyvarela.shopping.data.ShoppingItem
 import com.eddyvarela.shopping.touch.ItemRecyclerTouchCallback
 import kotlinx.android.synthetic.main.activity_main.*
-import java.lang.Thread.sleep
+
 
 @Suppress("MayBeConstant")
+
+
 class MainActivity : AppCompatActivity(), ItemDialog.ItemHandler {
 
     companion object{
@@ -28,19 +29,9 @@ class MainActivity : AppCompatActivity(), ItemDialog.ItemHandler {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initRecyclerViewFromDb()
-
-
-        var splashActivityDetails = Intent()
-        splashActivityDetails.setClass(
-            this@MainActivity,
-            SplashActivity::class.java
-        )
-
-        startActivity(splashActivityDetails)
 
         setContentView(R.layout.activity_main)
-
+        initRecyclerViewFromDb()
 
         newShoppingItem.setOnClickListener{
                showAddItemDialog()
@@ -116,3 +107,4 @@ class MainActivity : AppCompatActivity(), ItemDialog.ItemHandler {
         }.start()
     }
 }
+

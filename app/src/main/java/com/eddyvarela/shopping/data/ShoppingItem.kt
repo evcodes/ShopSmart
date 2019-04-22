@@ -3,6 +3,7 @@ package com.eddyvarela.shopping.data
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
+import android.graphics.Bitmap
 import java.io.Serializable
 
 @Entity(tableName = "shoppingItem")
@@ -13,6 +14,5 @@ data class ShoppingItem(
     @ColumnInfo(name = "category") var category: String,
     @ColumnInfo(name= "price") var price: String,
     @ColumnInfo(name= "dateCreated") var date: String,
-    @ColumnInfo(name= "isPurchased") var isPurchased: Boolean,
-    @ColumnInfo(name= "iconSrc") var imageSrc : String
+    @ColumnInfo(name = "isPurchased") var isPurchased: Boolean
 ):Serializable
