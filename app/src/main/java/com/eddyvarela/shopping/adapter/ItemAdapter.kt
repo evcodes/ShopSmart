@@ -1,10 +1,7 @@
 package com.eddyvarela.shopping.adapter
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +11,9 @@ import com.eddyvarela.shopping.data.AppDatabase
 import com.eddyvarela.shopping.data.ShoppingItem
 import com.eddyvarela.shopping.touch.ItemTouchHelperCallback
 import kotlinx.android.synthetic.main.item_row.view.*
-import kotlinx.android.synthetic.main.new_item_dialog.view.*
-
 import java.util.*
 
 class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ViewHolder>, ItemTouchHelperCallback {
-
 
     var shoppingItems = mutableListOf<ShoppingItem>()
 
@@ -44,7 +38,7 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ViewHolder>, ItemTouchHelpe
 
 
     fun addItem(item: ShoppingItem) {
-        shoppingItems.add(item)
+        shoppingItems.add(0, item)
         //notifyDataSetChanged()
         notifyItemInserted(0)
     }
@@ -61,16 +55,6 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ViewHolder>, ItemTouchHelpe
                 notifyItemRemoved(deletePosition)
             }
         }.start()
-    }
-
-    fun removeAll() {
-        shoppingItems.clear()
-        notifyDataSetChanged()
-    }
-
-    fun updateCheckBox(item: ShoppingItem, editIndex: Int) {
-        shoppingItems[editIndex] = item
-        notifyItemChanged(editIndex)
     }
 
     fun updateItem(item: ShoppingItem, editIndex: Int) {
@@ -115,13 +99,18 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ViewHolder>, ItemTouchHelpe
         viewHolder.cbDone.isChecked = item.isPurchased
         viewHolder.imageSrc.setImageResource(getImagesrc(item.category))
 
+
         viewHolder.btnDelete.setOnClickListener {
             deleteItem(viewHolder.adapterPosition)
         }
 
         viewHolder.cbDone.setOnClickListener{
             item.isPurchased = viewHolder.cbDone.isChecked
-            updateCheckBox(item,viewHolder.adapterPosition)
+            Thread {
+                AppDatabase.getInstance(
+                    context
+                ).shoppingItemDao().updateItem(item)
+            }.start()
         }
 
         viewHolder.btnEdit.setOnClickListener {
@@ -129,5 +118,4 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ViewHolder>, ItemTouchHelpe
                 viewHolder.adapterPosition)
         }
     }
-
 }

@@ -24,4 +24,7 @@
     <string name="remove_all">Remove All</string>
     <string name="display_app_name">ShopSmart</string>
     <string name="shopsmart">ShopSmart</string>
+    <string name="category">Category</string>
+    <string name="default_price">0</string>
+    <string name="description">Description</string>
 </resources>

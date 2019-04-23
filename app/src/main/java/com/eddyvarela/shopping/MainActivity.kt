@@ -25,16 +25,21 @@ class MainActivity : AppCompatActivity(), ItemDialog.ItemHandler {
     private lateinit var itemAdapter : ItemAdapter
 
     private var editIndex: Int = -1
+    private var total = 0.00
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
+        getTotal()
         setContentView(R.layout.activity_main)
+
+
         initRecyclerViewFromDb()
 
-        newShoppingItem.setOnClickListener{
-               showAddItemDialog()
+
+        newShoppingItem.setOnClickListener {
+            showAddItemDialog()
         }
 
         btnDeleteAll.setOnClickListener {
@@ -42,8 +47,10 @@ class MainActivity : AppCompatActivity(), ItemDialog.ItemHandler {
             Thread {
                 AppDatabase.getInstance(this@MainActivity).shoppingItemDao().deleteAll()
                 initRecyclerViewFromDb()
+                getTotal()
             }.start()
         }
+
     }
 
     private fun initRecyclerViewFromDb() {
@@ -85,11 +92,25 @@ class MainActivity : AppCompatActivity(), ItemDialog.ItemHandler {
             "EDITITEMDIALOG")
     }
 
+
+    private fun getTotal() {
+        Thread {
+            total = 0.0
+            var shoppingItems = AppDatabase.getInstance(this@MainActivity).shoppingItemDao().getAllItems()
+            for (i in shoppingItems) {
+                total += i.price.toFloat()
+            }
+            runOnUiThread {
+                tvEstimatedTotal.text = "Estimated Total: $total"
+            }
+        }.start()
+    }
+
     override fun itemCreated(item: ShoppingItem) {
         Thread{
             var newId = AppDatabase.getInstance(this).shoppingItemDao().insertItem(item)
-
             item.itemID = newId
+            getTotal()
 
             runOnUiThread{
                 itemAdapter.addItem(item)
@@ -100,7 +121,7 @@ class MainActivity : AppCompatActivity(), ItemDialog.ItemHandler {
     override fun itemUpdated(item: ShoppingItem) {
         Thread {
             AppDatabase.getInstance(this).shoppingItemDao().updateItem(item)
-
+            getTotal()
             runOnUiThread {
                 itemAdapter.updateItem(item, editIndex)
             }

@@ -2,17 +2,12 @@ package com.eddyvarela.shopping
 
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Spinner
+import android.widget.*
 import com.eddyvarela.shopping.data.ShoppingItem
 import kotlinx.android.synthetic.main.new_item_dialog.view.*
 import java.lang.RuntimeException
@@ -42,7 +37,6 @@ class ItemDialog : DialogFragment(), AdapterView.OnItemSelectedListener {
         }
     }
 
-    private lateinit var etItemDate: EditText
     private lateinit var etItemCategory: Spinner
     private lateinit var etItemPrice: EditText
     private lateinit var etItemTitle: EditText
@@ -52,7 +46,7 @@ class ItemDialog : DialogFragment(), AdapterView.OnItemSelectedListener {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
 
-        val categoryAdapter = ArrayAdapter.createFromResource(
+        var categoryAdapter = ArrayAdapter.createFromResource(
             this.context,
             R.array.array_category, android.R.layout.simple_spinner_item
         )
@@ -60,43 +54,44 @@ class ItemDialog : DialogFragment(), AdapterView.OnItemSelectedListener {
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
 
-        val rootView = requireActivity().layoutInflater.inflate(
+        var rootView = requireActivity().layoutInflater.inflate(
             R.layout.new_item_dialog, null
         )
         rootView.spinnerCategory.adapter = categoryAdapter
 
-        val builder = AlertDialog.Builder(requireContext())
+        var builder = AlertDialog.Builder(requireContext())
 
         builder.setTitle(getString(R.string.Make_new_item))
 
         rootView.spinnerCategory.onItemSelectedListener = this
-        etItemDate = rootView.etDate
         etItemTitle = rootView.etTitle
         etItemDescription = rootView.etDescription
+
+
         etItemPrice = rootView.etPrice
         etItemCategory = rootView.spinnerCategory
 
         builder.setView(rootView)
 
-        val arguments = this.arguments
+        var arguments = this.arguments
 
         // IF I AM IN EDIT MODE
         if (arguments != null && arguments.containsKey(
                 MainActivity.KEY_ITEM_TO_EDIT
             )
         ) {
-            Log.d("Debugging edit", "In onCreateDialog")
 
-            val shoppingItem = arguments.getSerializable(
+            var shoppingItem = arguments.getSerializable(
                 MainActivity.KEY_ITEM_TO_EDIT
             ) as ShoppingItem
 
-            etItemDate.setText(shoppingItem.date)
+            builder.setTitle("Edit Item")
+
             etItemTitle.setText(shoppingItem.title)
             etItemDescription.setText(shoppingItem.description)
             etItemPrice.setText(shoppingItem.price)
+            etItemCategory.setSelection(getIndex(shoppingItem.category))
 
-            builder.setTitle("Edit Item")
         }
 
         builder.setPositiveButton("OK") { _, _ ->
@@ -106,6 +101,15 @@ class ItemDialog : DialogFragment(), AdapterView.OnItemSelectedListener {
         return builder.create()
     }
 
+    private fun getIndex(s: String): Int {
+
+        return when (s) {
+            "Groceries" -> 0
+            "Clothing" -> 1
+            "Miscellaneous" -> 2
+            else -> 2
+        }
+    }
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
     }
 
@@ -121,7 +125,6 @@ class ItemDialog : DialogFragment(), AdapterView.OnItemSelectedListener {
                 val arguments = this.arguments
                 // IF EDIT MODE
                 if (arguments != null && arguments.containsKey(MainActivity.KEY_ITEM_TO_EDIT)) {
-                    Log.d("Debugging edit", "In onResume")
                     handleItemEdit()
                 } else {
                     handleItemCreate()
@@ -130,12 +133,13 @@ class ItemDialog : DialogFragment(), AdapterView.OnItemSelectedListener {
                 dialog.dismiss()
             } else {
                 etItemTitle.error = "This field can not be empty"
+                etItemDescription.error = "This field can not be empty"
+                etItemPrice.error = "This field can not be empty"
             }
         }
     }
 
     private fun handleItemCreate() {
-
         itemHandler.itemCreated(
             ShoppingItem(
                 null,
@@ -151,7 +155,6 @@ class ItemDialog : DialogFragment(), AdapterView.OnItemSelectedListener {
 
 
     private fun handleItemEdit() {
-        Log.d("Debugging edit", "In Handle Item Edit")
         val shoppingItemEdit = arguments?.getSerializable(
             MainActivity.KEY_ITEM_TO_EDIT
         ) as ShoppingItem
@@ -159,7 +162,6 @@ class ItemDialog : DialogFragment(), AdapterView.OnItemSelectedListener {
         shoppingItemEdit.description = etItemDescription.text.toString()
         shoppingItemEdit.category = etItemCategory.selectedItem.toString()
         shoppingItemEdit.price = etItemPrice.text.toString()
-        shoppingItemEdit.date = etItemDate.text.toString()
         itemHandler.itemUpdated(shoppingItemEdit)
     }
 
